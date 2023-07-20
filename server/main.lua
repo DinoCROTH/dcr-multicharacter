@@ -6,7 +6,7 @@ local StarterItems = {
 
 
 local function GiveStarterItems(source)
-    local Player = exports['qbr-core']:GetPlayer(source)
+    local Player = exports['dcr-core']:GetPlayer(source)
     for k, v in pairs(StarterItems) do
         Player.Functions.AddItem(v.item, 1)
     end
@@ -39,48 +39,48 @@ local function loadHouseData()
             }
         end
     end
-    TriggerClientEvent("qbr-garages:client:houseGarageConfig", -1, HouseGarages)
-    TriggerClientEvent("qbr-houses:client:setHouseConfig", -1, Houses)
+    TriggerClientEvent("dcr-garages:client:houseGarageConfig", -1, HouseGarages)
+    TriggerClientEvent("dcr-houses:client:setHouseConfig", -1, Houses)
 end
 
-RegisterNetEvent('qbr-multicharacter:server:disconnect', function(source)
-    DropPlayer(source, "You have disconnected from QBCore RedM")
+RegisterNetEvent('dcr-multicharacter:server:disconnect', function(source)
+    DropPlayer(source, "You have disconnected from DCCore RedM")
 end)
 
-RegisterNetEvent('qbr-multicharacter:server:loadUserData', function(cData)
+RegisterNetEvent('dcr-multicharacter:server:loadUserData', function(cData)
     local src = source
-    if exports['qbr-core']:Login(src, cData.citizenid) then
-        print('^2[qbr-core]^7 '..GetPlayerName(src)..' (Citizen ID: '..cData.citizenid..') has succesfully loaded!')
-        exports['qbr-core']:RefreshCommands(src)
-        TriggerClientEvent("qbr-multicharacter:client:closeNUI", src)
-        TriggerClientEvent('qbr-spawn:client:setupSpawnUI', src, cData, false)
-        TriggerEvent("qbr-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(src) .. "** ("..cData.citizenid.." | "..src..") loaded..")
+    if exports['dcr-core']:Login(src, cData.citizenid) then
+        print('^2[dcr-core]^7 '..GetPlayerName(src)..' (Citizen ID: '..cData.citizenid..') has succesfully loaded!')
+        exports['dcr-core']:RefreshCommands(src)
+        TriggerClientEvent("dcr-multicharacter:client:closeNUI", src)
+        TriggerClientEvent('dcr-spawn:client:setupSpawnUI', src, cData, false)
+        TriggerEvent("dcr-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(src) .. "** ("..cData.citizenid.." | "..src..") loaded..")
 	end
 end)
 
-RegisterNetEvent('qbr-multicharacter:server:createCharacter', function(data, enabledhouses)
+RegisterNetEvent('dcr-multicharacter:server:createCharacter', function(data, enabledhouses)
     local newData = {}
     local src = source
     newData.cid = data.cid
     newData.charinfo = data
-    if exports['qbr-core']:Login(src, false, newData) then
-        exports['qbr-core']:ShowSuccess(GetCurrentResourceName(), GetPlayerName(src)..' has succesfully loaded!')
-        exports['qbr-core']:RefreshCommands(src)
+    if exports['dcr-core']:Login(src, false, newData) then
+        exports['dcr-core']:ShowSuccess(GetCurrentResourceName(), GetPlayerName(src)..' has succesfully loaded!')
+        exports['dcr-core']:RefreshCommands(src)
         --[[if enabledhouses then loadHouseData() end]] -- Enable once housing is ready
-        TriggerClientEvent("qbr-multicharacter:client:closeNUI", src)
-        TriggerClientEvent('qbr-spawn:client:setupSpawnUI', src, newData, true)
+        TriggerClientEvent("dcr-multicharacter:client:closeNUI", src)
+        TriggerClientEvent('dcr-spawn:client:setupSpawnUI', src, newData, true)
         GiveStarterItems(src)
 	end
 end)
 
-RegisterNetEvent('qbr-multicharacter:server:deleteCharacter', function(citizenid)
-    exports['qbr-core']:DeleteCharacter(source, citizenid)
+RegisterNetEvent('dcr-multicharacter:server:deleteCharacter', function(citizenid)
+    exports['dcr-core']:DeleteCharacter(source, citizenid)
 end)
 
 -- Callbacks
 
-exports['qbr-core']:CreateCallback("qb-multicharacter:server:setupCharacters", function(source, cb)
-    local license = exports['qbr-core']:GetIdentifier(source, 'license')
+exports['dcr-core']:CreateCallback("dc-multicharacter:server:setupCharacters", function(source, cb)
+    local license = exports['dcr-core']:GetIdentifier(source, 'license')
     local plyChars = {}
     MySQL.query('SELECT * FROM players WHERE license = @license', {['@license'] = license}, function(result)
         for i = 1, (#result), 1 do
@@ -93,8 +93,8 @@ exports['qbr-core']:CreateCallback("qb-multicharacter:server:setupCharacters", f
     end)
 end)
 
-exports['qbr-core']:CreateCallback("qb-multicharacter:server:GetNumberOfCharacters", function(source, cb)
-    local license = exports['qbr-core']:GetIdentifier(source, 'license')
+exports['dcr-core']:CreateCallback("dc-multicharacter:server:GetNumberOfCharacters", function(source, cb)
+    local license = exports['dcr-core']:GetIdentifier(source, 'license')
     local numOfChars = 0
     if next(Config.PlayersNumberOfCharacters) then
         for i, v in pairs(Config.PlayersNumberOfCharacters) do
@@ -111,7 +111,7 @@ exports['qbr-core']:CreateCallback("qb-multicharacter:server:GetNumberOfCharacte
     cb(numOfChars)
 end)
 
-exports['qbr-core']:CreateCallback("qbr-multicharacter:server:getSkin", function(source, cb, cid)
+exports['dcr-core']:CreateCallback("dcr-multicharacter:server:getSkin", function(source, cb, cid)
     MySQL.query('SELECT * FROM playerskins WHERE citizenid = ? AND active = ?', {cid, 1}, function(result)
         result[1].skin = json.decode(result[1].skin)
         result[1].clothes = json.decode(result[1].clothes)
@@ -121,11 +121,11 @@ end)
 
 -- Commands
 
-exports['qbr-core']:AddCommand("logout", "Logout of Character (Admin Only)", {}, false, function(source)
-    exports['qbr-core']:Logout(source)
-    TriggerClientEvent('qbr-multicharacter:client:chooseChar', source)
+exports['dcr-core']:AddCommand("logout", "Logout of Character (Admin Only)", {}, false, function(source)
+    exports['dcr-core']:Logout(source)
+    TriggerClientEvent('dcr-multicharacter:client:chooseChar', source)
 end, 'admin')
 
-exports['qbr-core']:AddCommand("closeNUI", "Close Multi NUI", {}, false, function(source)
-    TriggerClientEvent('qb-multicharacter:client:closeNUI', source)
+exports['dcr-core']:AddCommand("closeNUI", "Close Multi NUI", {}, false, function(source)
+    TriggerClientEvent('dc-multicharacter:client:closeNUI', source)
 end, 'user')
