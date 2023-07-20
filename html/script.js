@@ -1,6 +1,6 @@
 var selectedChar = null;
 var WelcomePercentage = "30vh"
-qbMultiCharacters = {}
+dcMultiCharacters = {}
 var Loaded = false;
 var NChar = null;
 
@@ -13,7 +13,7 @@ $(document).ready(function (){
             if (data.toggle) {
                 $('.container').show();
                 $(".welcomescreen").fadeIn(150);
-                qbMultiCharacters.resetAll();
+                dcMultiCharacters.resetAll();
 
                 var originalText = "Retrieving player data";
                 var loadingProgress = 0;
@@ -43,20 +43,20 @@ $(document).ready(function (){
 
                 setTimeout(function(){
 					setCharactersList()
-                    $.post('https://qbr-multicharacter/setupCharacters');
+                    $.post('https://dcr-multicharacter/setupCharacters');
                     setTimeout(function(){
                         clearInterval(DotsInterval);
                         loadingProgress = 0;
                         originalText = "Retrieving data";
                         $(".welcomescreen").fadeOut(150);
-                        qbMultiCharacters.fadeInDown('.character-info', '20%', 400);
-                        qbMultiCharacters.fadeInDown('.characters-list', '20%', 400);
-                        $.post('https://qbr-multicharacter/removeBlur');
+                        dcMultiCharacters.fadeInDown('.character-info', '20%', 400);
+                        dcMultiCharacters.fadeInDown('.characters-list', '20%', 400);
+                        $.post('https://dcr-multicharacter/removeBlur');
                     }, 2000);
                 }, 2000);
             } else {
                 $('.container').fadeOut(250);
-                qbMultiCharacters.resetAll();
+                dcMultiCharacters.resetAll();
             }
         }
 
@@ -79,8 +79,8 @@ $('.continue-btn').click(function(e){
 $('.disconnect-btn').click(function(e){
     e.preventDefault();
 
-    $.post('https://qbr-multicharacter/closeUI');
-    $.post('https://qbr-multicharacter/disconnectButton');
+    $.post('https://dcr-multicharacter/closeUI');
+    $.post('https://dcr-multicharacter/disconnectButton');
 });
 
 function setupCharInfo(cData) {
@@ -134,7 +134,7 @@ $(document).on('click', '.character', function(e) {
             $("#play-text").html("Create");
             $("#play").css({"display":"block"});
             $("#delete").css({"display":"none"});
-            $.post('https://qbr-multicharacter/cDataPed', JSON.stringify({
+            $.post('https://dcr-multicharacter/cDataPed', JSON.stringify({
                 cData: cDataPed
             }));
         } else {
@@ -144,7 +144,7 @@ $(document).on('click', '.character', function(e) {
             $("#delete-text").html("Delete");
             $("#play").css({"display":"block"});
             $("#delete").css({"display":"block"});
-            $.post('https://qbr-multicharacter/cDataPed', JSON.stringify({
+            $.post('https://dcr-multicharacter/cDataPed', JSON.stringify({
                 cData: cDataPed
             }));
         }
@@ -157,7 +157,7 @@ $(document).on('click', '.character', function(e) {
             $("#play-text").html("Register");
             $("#play").css({"display":"block"});
             $("#delete").css({"display":"none"});
-            $.post('https://qbr-multicharacter/cDataPed', JSON.stringify({
+            $.post('https://dcr-multicharacter/cDataPed', JSON.stringify({
                 cData: cDataPed
             }));
         } else {
@@ -167,7 +167,7 @@ $(document).on('click', '.character', function(e) {
             $("#delete-text").html("Delete");
             $("#play").css({"display":"block"});
             $("#delete").css({"display":"block"});
-            $.post('https://qbr-multicharacter/cDataPed', JSON.stringify({
+            $.post('https://dcr-multicharacter/cDataPed', JSON.stringify({
                 cData: cDataPed
             }));
         }
@@ -215,7 +215,7 @@ $(document).on('click', '#create', function (e) {
         return false;
     }
 
-    $.post('https://qbr-multicharacter/createNewCharacter', JSON.stringify({
+    $.post('https://dcr-multicharacter/createNewCharacter', JSON.stringify({
         firstname: firstname,
         lastname: lastname,
         nationality: nationality,
@@ -226,13 +226,13 @@ $(document).on('click', '#create', function (e) {
     $(".container").fadeOut(150);
     $('.characters-list').css("filter", "none");
     $('.character-info').css("filter", "none");
-    qbMultiCharacters.fadeOutDown('.character-register', '125%', 400);
+    dcMultiCharacters.fadeOutDown('.character-register', '125%', 400);
     refreshCharacters()
 
 });
 
 $(document).on('click', '#accept-delete', function(e){
-    $.post('https://qbr-multicharacter/removeCharacter', JSON.stringify({
+    $.post('https://dcr-multicharacter/removeCharacter', JSON.stringify({
         citizenid: $(selectedChar).data("citizenid"),
     }));
     $('.character-delete').fadeOut(150);
@@ -267,10 +267,10 @@ function refreshCharacters() {
     setTimeout(function(){
         $(selectedChar).removeClass("char-selected");
         selectedChar = null;
-        $.post('https://qbr-multicharacter/setupCharacters');
+        $.post('https://dcr-multicharacter/setupCharacters');
         $("#delete").css({"display":"none"});
         $("#play").css({"display":"none"});
-        qbMultiCharacters.resetAll();
+        dcMultiCharacters.resetAll();
     }, 100)
 }
 
@@ -278,7 +278,7 @@ $("#close-reg").click(function (e) {
     e.preventDefault();
     $('.characters-list').css("filter", "none")
     $('.character-info').css("filter", "none")
-    qbMultiCharacters.fadeOutDown('.character-register', '125%', 400);
+    dcMultiCharacters.fadeOutDown('.character-register', '125%', 400);
 })
 
 $("#close-del").click(function (e) {
@@ -293,18 +293,18 @@ $(document).on('click', '#play', function(e) {
 
     if (selectedChar !== null) {
         if (charData !== "") {
-            $.post('https://qbr-multicharacter/selectCharacter', JSON.stringify({
+            $.post('https://dcr-multicharacter/selectCharacter', JSON.stringify({
                 cData: $(selectedChar).data('cData')
             }));
             setTimeout(function(){
-                qbMultiCharacters.fadeOutDown('.characters-list', "-40%", 400);
-                qbMultiCharacters.fadeOutDown('.character-info', "-40%", 400);
-                qbMultiCharacters.resetAll();
+                dcMultiCharacters.fadeOutDown('.characters-list', "-40%", 400);
+                dcMultiCharacters.fadeOutDown('.character-info', "-40%", 400);
+                dcMultiCharacters.resetAll();
             }, 1500);
         } else {
             $('.characters-list').css("filter", "blur(2px)")
             $('.character-info').css("filter", "blur(2px)")
-            qbMultiCharacters.fadeInDown('.character-register', '25%', 400);
+            dcMultiCharacters.fadeInDown('.character-register', '25%', 400);
         }
     }
 });
@@ -321,13 +321,13 @@ $(document).on('click', '#delete', function(e) {
     }
 });
 
-qbMultiCharacters.fadeOutUp = function(element, time) {
+dcMultiCharacters.fadeOutUp = function(element, time) {
     $(element).css({"display":"block"}).animate({top: "-80.5%",}, time, function(){
         $(element).css({"display":"none"});
     });
 }
 
-qbMultiCharacters.fadeOutDown = function(element, percent, time) {
+dcMultiCharacters.fadeOutDown = function(element, percent, time) {
     if (percent !== undefined) {
         $(element).css({"display":"block"}).animate({top: percent,}, time, function(){
             $(element).css({"display":"none"});
@@ -339,11 +339,11 @@ qbMultiCharacters.fadeOutDown = function(element, percent, time) {
     }
 }
 
-qbMultiCharacters.fadeInDown = function(element, percent, time) {
+dcMultiCharacters.fadeInDown = function(element, percent, time) {
     $(element).css({"display":"block"}).animate({top: percent,}, time);
 }
 
-qbMultiCharacters.resetAll = function() {
+dcMultiCharacters.resetAll = function() {
     $('.characters-list').hide();
     $('.characters-list').css("top", "-40");
     $('.character-info').hide();
