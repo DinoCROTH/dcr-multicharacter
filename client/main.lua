@@ -62,7 +62,7 @@ end
 local function createCharacter(sex)
     if (sex == 0) then
         local model = 'mp_male'
-        exports['qbr-clothing']:RequestAndSetModel(model)
+        exports['dcr-clothing']:RequestAndSetModel(model)
         Wait(1000)
         Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), 0x158cb7f2, true, true, true); --head
         Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), 0x16e292a1, true, true, true); --torso
@@ -73,7 +73,7 @@ local function createCharacter(sex)
         SetModelAsNoLongerNeeded(model)
     else
         local model = 'mp_female'
-        exports['qbr-clothing']:RequestAndSetModel(model)
+        exports['dcr-clothing']:RequestAndSetModel(model)
         Wait(1000)
         Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), 0x11567c3, true, true, true); --head
         Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), 0x2c4fe0c5, true, true, true); --torso
@@ -113,7 +113,7 @@ local function skyCam(bool)
 end
 
 local function openCharMenu(bool)
-    exports['qbr-core']:TriggerCallback("qb-multicharacter:server:GetNumberOfCharacters", function(result)
+    exports['dcr-core']:TriggerCallback("dc-multicharacter:server:GetNumberOfCharacters", function(result)
         SetNuiFocus(bool, bool)
         SendNUIMessage({
             action = "ui",
@@ -128,31 +128,31 @@ end
 
 -- Events
 
--- RegisterNetEvent('qb-multicharacter:client:closeNUIdefault', function() -- This event is only for no starting apartments
+-- RegisterNetEvent('dc-multicharacter:client:closeNUIdefault', function() -- This event is only for no starting apartments
 --     DeleteEntity(charPed)
 --     SetNuiFocus(false, false)
 --     DoScreenFadeOut(500)
 --     Wait(2000)
 --     SetEntityCoords(PlayerPedId(), Config.DefaultSpawn.x, Config.DefaultSpawn.y, Config.DefaultSpawn.z)
---     TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
---     TriggerEvent('QBCore:Client:OnPlayerLoaded')
---     TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
---     TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
+--     TriggerServerEvent('dcCore:Server:OnPlayerLoaded')
+--     TriggerEvent('dcCore:Client:OnPlayerLoaded')
+--     TriggerServerEvent('dc-houses:server:SetInsideMeta', 0, false)
+--     TriggerServerEvent('dc-apartments:server:SetInsideMeta', 0, 0, false)
 --     Wait(500)
 --     openCharMenu()
 --     SetEntityVisible(PlayerPedId(), true)
 --     Wait(500)
 --     DoScreenFadeIn(250)
---     TriggerEvent('qb-weathersync:client:EnableSync')
---     TriggerEvent('qb-clothes:client:CreateFirstCharacter')
+--     TriggerEvent('dc-weathersync:client:EnableSync')
+--     TriggerEvent('dc-clothes:client:CreateFirstCharacter')
 -- end)
 
-RegisterNetEvent('qbr-multicharacter:client:closeNUI', function()
+RegisterNetEvent('dcr-multicharacter:client:closeNUI', function()
     DeleteEntity(charPed)
     SetNuiFocus(false, false)
 end)
 
-RegisterNetEvent('qbr-multicharacter:client:chooseChar', function()
+RegisterNetEvent('dcr-multicharacter:client:chooseChar', function()
     SetEntityVisible(PlayerPedId(), false, false)
     SetNuiFocus(false, false)
     DoScreenFadeOut(10)
@@ -181,7 +181,7 @@ end)
 RegisterNUICallback('disconnectButton', function()
     SetEntityAsMissionEntity(charPed, true, true)
     DeleteEntity(charPed)
-    TriggerServerEvent('qb-multicharacter:server:disconnect')
+    TriggerServerEvent('dc-multicharacter:server:disconnect')
 end)
 
 RegisterNUICallback('cDataPed', function(data) -- Visually seeing the char
@@ -190,7 +190,7 @@ RegisterNUICallback('cDataPed', function(data) -- Visually seeing the char
     DeleteEntity(charPed)
 
     if cData ~= nil then
-        exports['qbr-core']:TriggerCallback('qbr-multicharacter:server:getSkin', function(data)
+        exports['dcr-core']:TriggerCallback('dcr-multicharacter:server:getSkin', function(data)
             model = data.model and tonumber(data.model) or false
             currentSkin = data.skin or {}
             currentClothes = data.clothes or {}
@@ -207,8 +207,8 @@ RegisterNUICallback('cDataPed', function(data) -- Visually seeing the char
                     while not Citizen.InvokeNative(0xA0BC8FAED8CFEB3C, charPed) do
                         Wait(1)
                     end
-                    exports['qbr-clothing']:loadSkin(charPed, currentSkin, false)
-                    exports['qbr-clothing']:loadClothes(charPed, currentClothes, false)
+                    exports['dcr-clothing']:loadSkin(charPed, currentSkin, false)
+                    exports['dcr-clothing']:loadClothes(charPed, currentClothes, false)
                 end)
             else
                 CreateThread(function()
@@ -259,23 +259,23 @@ RegisterNUICallback('selectCharacter', function(data) -- When a char is selected
         selectingChar = false
         local cData = data.cData
         DoScreenFadeOut(10)
-        TriggerServerEvent('qbr-multicharacter:server:loadUserData', cData)
+        TriggerServerEvent('dcr-multicharacter:server:loadUserData', cData)
         openCharMenu(false)
         local model = IsPedMale(charPed) and 'mp_male' or 'mp_female'
         SetEntityAsMissionEntity(charPed, true, true)
         DeleteEntity(charPed)
         Wait(5000)
-        exports['qbr-clothing']:RequestAndSetModel(model)
+        exports['dcr-clothing']:RequestAndSetModel(model)
         Wait(200)
-        exports['qbr-clothing']:loadSkin(PlayerPedId(), currentSkin, true)
+        exports['dcr-clothing']:loadSkin(PlayerPedId(), currentSkin, true)
         Wait(500)
-        exports['qbr-clothing']:loadClothes(PlayerPedId(), currentClothes, false)
+        exports['dcr-clothing']:loadClothes(PlayerPedId(), currentClothes, false)
         SetModelAsNoLongerNeeded(model)
     end)
 end)
 
 RegisterNUICallback('setupCharacters', function() -- Present char info
-    exports['qbr-core']:TriggerCallback("qb-multicharacter:server:setupCharacters", function(result)
+    exports['dcr-core']:TriggerCallback("dc-multicharacter:server:setupCharacters", function(result)
         SendNUIMessage({
             action = "setupCharacters",
             characters = result
@@ -300,14 +300,14 @@ RegisterNUICallback('createNewCharacter', function(data) -- Creating a char
     createCharacter(data.gender)
     DeleteEntity(charPed)
     SetModelAsNoLongerNeeded(charPed)
-    TriggerServerEvent('qbr-multicharacter:server:createCharacter', data)
+    TriggerServerEvent('dcr-multicharacter:server:createCharacter', data)
     Wait(1000)
     DoScreenFadeIn(1000)
 end)
 
 RegisterNUICallback('removeCharacter', function(data) -- Removing a char
-    TriggerServerEvent('qbr-multicharacter:server:deleteCharacter', data.citizenid)
-    TriggerEvent('qbr-multicharacter:client:chooseChar')
+    TriggerServerEvent('dcr-multicharacter:server:deleteCharacter', data.citizenid)
+    TriggerEvent('dcr-multicharacter:client:chooseChar')
 end)
 
 -- Threads
@@ -319,7 +319,7 @@ CreateThread(function()
     while true do
         Wait(0)
         if NetworkIsSessionStarted() then
-            TriggerEvent('qbr-multicharacter:client:chooseChar')
+            TriggerEvent('dcr-multicharacter:client:chooseChar')
             return
         end
     end
